@@ -91,6 +91,11 @@ private:
         createLogicalDevice();
         createSwapChain();
         createImageViews();
+        createGraphicsPipeline();
+    }
+
+    void createGraphicsPipeline() {
+        //TODO:
     }
 
     void createImageViews() {
