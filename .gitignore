@@ -364,4 +364,3 @@ FodyWeavers.xsd
 *.spv
 /GraphicsPractice2/shaders/compile.bat
 /GraphicsPractice2/GraphicsPractice2.vcxproj
-/.gitignore
