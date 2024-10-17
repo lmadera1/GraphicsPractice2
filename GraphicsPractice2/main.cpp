@@ -43,6 +43,7 @@ private:
     VkRenderPass renderPass;
     VkPipelineLayout pipelineLayout;
     VkPipeline graphicsPipeline;
+    std::vector<VkFramebuffer> swapChainFramebuffers;
 
 
     //VulkanApp Validation Layers
@@ -98,6 +99,38 @@ private:
         createImageViews();
         createRenderPass();
         createGraphicsPipeline();
+        createFramebuffers();
+    }
+
+    void createFramebuffers() {
+        
+
+        //Resize vector of frame buffers to match size of Image Views
+        swapChainFramebuffers.resize(swapChainImageViews.size());
+
+        //Create a frame buffer for each Image View
+        for (size_t i = 0; i < swapChainImageViews.size(); i++) {
+            //Get attachments for Image View
+            VkImageView attachments[] = {
+                swapChainImageViews[i]
+            };
+
+            //TODO: Redefine frame buffer to be app specific
+            //Define frame buffer
+            VkFramebufferCreateInfo framebufferInfo{};
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = renderPass;
+            framebufferInfo.attachmentCount = 1;
+            framebufferInfo.pAttachments = attachments;
+            framebufferInfo.width = swapChainExtent.width;
+            framebufferInfo.height = swapChainExtent.height;
+            framebufferInfo.layers = 1;
+
+            //Create frame buffer
+            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS) {
+                throw std::runtime_error("failed to create framebuffer!");
+            }
+        }
     }
 
     void createRenderPass() {
@@ -562,6 +595,9 @@ private:
     }
 
     void cleanup() {
+        for (auto framebuffer : swapChainFramebuffers) {
+            vkDestroyFramebuffer(device, framebuffer, nullptr);
+        }
 
         vkDestroyPipeline(device, graphicsPipeline, nullptr);
 
